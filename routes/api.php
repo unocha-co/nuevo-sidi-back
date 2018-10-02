@@ -32,13 +32,21 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 	Route::resource('administrative', 'AdministrativeDivisionsController');
 	Route::resource('relation', 'OrganizationProjectRelationController');
 	Route::resource('organizations', 'OrganizationsController');
-	Route::resource('project', 'ProjectClassController');
+	Route::resource('project', 'ProjectController');
+	Route::resource('projectclass', 'ProjectClassController');
 	Route::resource('contact', 'ContactGroupsController');
 	Route::resource('types', 'OrganizationTypesController');
 	Route::resource('userprofiles', 'UserProfilesController');
 	Route::resource('allprojects', 'ProjectController');
+	Route::resource('contacts', 'ContactsController');
+	Route::resource('hrp', 'HrpController');
+	Route::resource('project_tags', 'ProjectTagsController');
+	Route::resource('project_tags_rel', 'ProjectProjectTagsController');
 
 	//Custom
 	Route::post('validatePermission', 'UserController@validatePermission');
 	Route::get('getAllRegions', 'AdministrativeDivisionsController@getAllRegions');
+	Route::post('step3/{id}', 'ProjectController@step3');
 });
+
+   
