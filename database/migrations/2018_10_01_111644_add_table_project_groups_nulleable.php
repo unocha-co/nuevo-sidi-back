@@ -13,11 +13,11 @@ class AddTableProjectGroupsNulleable extends Migration
      */
     public function up()
     {
-        Schema::table('project_groups', function (Blueprint $table) {
-             $table->integer('group_id')->nullable()->change();
-             $table->string('gender')->nullable()->change();
-             $table->string('age')->nullable()->change();
-             $table->string('type')->nullable()->change();
+        Schema::table('project_beneficiaries', function (Blueprint $table) {
+             $table->integer('group_id')->nullable()->default(NULL)->change();
+             $table->string('gender')->nullable()->default(NULL)->change();
+             $table->string('age')->nullable()->default(NULL)->change();
+             $table->string('type')->nullable()->default(NULL)->change();
         });
     }
 

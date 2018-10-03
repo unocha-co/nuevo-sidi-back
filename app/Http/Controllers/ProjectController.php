@@ -21,19 +21,21 @@ class ProjectController extends Controller
         $data = new Project();
         $data->name = $request->name;
         $data->code = $request->code;
+        $data->cost = $request->cost;
         $data->description = $request->description;
         $data->date_start = date('Y-m-d H:i:s', strtotime($request->date_start));
         $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
         $data->interagency = $request->interagency == true ? 1 : 0;
-        $data->cost = $request->budget[0]['value'];
         $data->contact_id = $request->contact;
         $data->hrp_id = $request->hrp;
         if($data->save()){
+          if(isset($request->organization)){
             $po = new ProjectOrganization();
             $po->project_id = $data->id;
             $po->organization_id = $request->organization;
             $po->organization_project_relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
             $po->save();
+          }
             $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
             $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
             foreach ($request->implementers as $i) {
@@ -44,19 +46,23 @@ class ProjectController extends Controller
                 $po->save();
             }
             for($b=0; $b<count($request->budget); $b++){
+              if($request->budget[$b]['value']){
                 $po = new Budget();
                 $po->project_id = $data->id;
                 $po->budget = $request->budget[$b]['value'];
                 $po->budget_id = $b;
                 $po->save();
+              }
             }
             foreach ($request->donors as $d) {
+              if($d['id']){
                 $po = new ProjectOrganization();
                 $po->project_id = $data->id;
                 $po->organization_id = $d['id'];
                 $po->organization_project_relation_id = $donors_id;
                 $po->value = $d['value'];
                 $po->save();
+              }
             }
             if($request->national){
                 $padmin = new ProjectAdmin();
@@ -81,30 +87,47 @@ class ProjectController extends Controller
     {
         $p = $request->poblacionales;
         $i = $request->indirectos;
+        $o = $request->organizations;
 
         ProjectBeneficiaries::where('project_id', $id)->delete();
+        ProjectOrganization::where('project_id', $id)->where('organization_project_relation_id', 5)->delete();
 
         if(isset($p['groups'])){
          foreach ($p['groups'] as $key => $val) {
-             $item = new ProjectBeneficiaries();
-             $item->project_id = $id;
-             $item->group_id = $val['id'];
-             $item->number = $val['value'];
-             $item->type = 1;
-             $item->save();
+            if($val){
+               $item = new ProjectBeneficiaries();
+               $item->project_id = $id;
+               $item->group_id = $val['id'];
+               $item->number = $val['value'];
+               $item->type = 1;
+               $item->save();
+            }
+          }
+        }
+
+       foreach ($o as $org) {
+          if($org){
+             $po = new ProjectOrganization();
+              $po->project_id = $id;
+              $po->organization_id = $org;
+              $po->organization_project_relation_id = 5;
+              $po->save();
           }
         }
 
         //Poblacionales
         if(isset($p['total'])){
-            $item = new ProjectBeneficiaries();
-            $item->project_id = $id;
-            $item->number = $p['total'];
-            $item->type = 1;
-            $item->save();
+            if($p['total']){
+              $item = new ProjectBeneficiaries();
+              $item->project_id = $id;
+              $item->number = $p['total'];
+              $item->type = 1;
+              $item->save();
+            }
         }
         if(isset($p['gender']['m'])){
             foreach($p['gender']['m'] as $key => $val) {
+              if($val){
                 $item = new ProjectBeneficiaries();              
                 $item->project_id = $id;
                 $item->gender = 'm';
@@ -129,12 +152,14 @@ class ProjectController extends Controller
                     } 
                 }
                 $item->save();
+              }
             }
                    
         }
         
         if(isset($p['gender']['h'])){
             foreach($p['gender']['h'] as $key => $val) {
+              if($val){
                 $item = new ProjectBeneficiaries();
                 $item->project_id = $id;
                 $item->gender = 'h';
@@ -159,20 +184,24 @@ class ProjectController extends Controller
                     } 
                 }
                 $item->save();
+              }
             }
                    
         }
 
          //Indirectos
         if(isset($i['total'])){
+          if($i['total']){
             $item = new ProjectBeneficiaries();
             $item->project_id = $id;
             $item->number = $i['total'];
             $item->type = 2;
             $item->save();
+          }
         }
         if(isset($i['gender']['m'])){
             foreach($i['gender']['m'] as $key => $val) {
+              if($val){
                 $item = new ProjectBeneficiaries();              
                 $item->project_id = $id;
                 $item->gender = 'm';
@@ -197,12 +226,14 @@ class ProjectController extends Controller
                     } 
                 }
                 $item->save();
+              }
             }
                    
         }
 
         if(isset($i['gender']['h'])){
             foreach($i['gender']['h'] as $key => $val) {
+              if($val){
                 $item = new ProjectBeneficiaries();
                 $item->project_id = $id;
                 $item->gender = 'h';
@@ -227,6 +258,7 @@ class ProjectController extends Controller
                     } 
                 }
                 $item->save();
+              }
             }
                    
         }
@@ -237,7 +269,7 @@ class ProjectController extends Controller
     public function show($id){
         $data = Project::with(['budget', 'location', 'tags', 'beneficiaries'])
         ->where('id', $id)
-        ->select('name', 'hrp_id as hrp', 'code', 'contact_id as contact', 'interagency', 'description', 'id', 'date_start', 'date_end')
+        ->select('name', 'hrp_id as hrp', 'code', 'contact_id as contact', 'interagency', 'description', 'id', 'date_start', 'date_end', 'cost')
         ->first();
         if($data){
           $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
@@ -250,6 +282,10 @@ class ProjectController extends Controller
           $data->donors = ProjectOrganization::where('project_id', $id)
           ->where('organization_project_relation_id', $donors_id)
           ->select(['organization_id', 'value'])
+          ->get();
+          $data->beneficiaries_organizations = ProjectOrganization::where('project_id', $id)
+          ->where('organization_project_relation_id', 5)
+          ->select(['organization_id'])
           ->get();
           $e = ProjectOrganization::where('project_id', $id)
           ->where('organization_project_relation_id', $ejecutor_id)
@@ -268,46 +304,52 @@ class ProjectController extends Controller
         if($data){
           $data->name = $request->name;
           $data->code = $request->code;
+          $data->cost = $request->cost;
           $data->description = $request->description;
           $data->date_start = date('Y-m-d H:i:s', strtotime($request->date_start));
           $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
           $data->interagency = $request->interagency == true ? 1 : 0;
-          $data->cost = $request->budget[0]['value'];
           $data->contact_id = $request->contact;
           $data->hrp_id = $request->hrp;
           if($data->save()){
               ProjectOrganization::where('project_id', $id)->delete();
               Budget::where('project_id', $id)->delete();
               ProjectAdmin::where('project_id', $id)->delete();
-              $po = new ProjectOrganization();
-              $po->project_id = $data->id;
-              $po->organization_id = $request->organization;
-              $po->organization_project_relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
-              $po->save();
-              $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
-              $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
-              foreach ($request->implementers as $i) {
-                  $po = new ProjectOrganization();
-                  $po->project_id = $data->id;
-                  $po->organization_id = $i;
-                  $po->organization_project_relation_id = $implementers_id;
-                  $po->save();
+              if(isset($request->organization)){
+                $po = new ProjectOrganization();
+                $po->project_id = $data->id;
+                $po->organization_id = $request->organization;
+                $po->organization_project_relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
+                $po->save();
               }
-              for($b=0; $b<count($request->budget); $b++){
-                  $po = new Budget();
-                  $po->project_id = $data->id;
-                  $po->budget = $request->budget[$b]['value'];
-                  $po->budget_id = $b;
-                  $po->save();
-              }
-              foreach ($request->donors as $d) {
-                  $po = new ProjectOrganization();
-                  $po->project_id = $data->id;
-                  $po->organization_id = $d['id'];
-                  $po->organization_project_relation_id = $donors_id;
-                  $po->value = $d['value'];
-                  $po->save();
-              }
+                $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
+                $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
+                foreach ($request->implementers as $i) {
+                    $po = new ProjectOrganization();
+                    $po->project_id = $data->id;
+                    $po->organization_id = $i;
+                    $po->organization_project_relation_id = $implementers_id;
+                    $po->save();
+                }
+                for($b=0; $b<count($request->budget); $b++){
+                  if($request->budget[$b]['value']){
+                    $po = new Budget();
+                    $po->project_id = $data->id;
+                    $po->budget = $request->budget[$b]['value'];
+                    $po->budget_id = $b;
+                    $po->save();
+                  }
+                }
+                foreach ($request->donors as $d) {
+                  if($d['id']){
+                    $po = new ProjectOrganization();
+                    $po->project_id = $data->id;
+                    $po->organization_id = $d['id'];
+                    $po->organization_project_relation_id = $donors_id;
+                    $po->value = $d['value'];
+                    $po->save();
+                  }
+                }
               if($request->national){
                   $padmin = new ProjectAdmin();
                   $padmin->project_id = $data->id;
