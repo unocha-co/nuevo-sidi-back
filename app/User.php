@@ -31,5 +31,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\ProfilePermissions', 'id_profile', 'user_profile_id');
     }
+
+    public function auth0()
+    {
+        return $this->hasOne('App\UserAuth', 'user_id', 'id');
+    }
     
 }
