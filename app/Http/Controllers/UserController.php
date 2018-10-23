@@ -42,7 +42,6 @@ class UserController extends Controller
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
-            $user->auth0_id = $request->user_id;
             $user->organization_id = 0;
             $user->user_profile_id = 0;
             $save = $user->save();
