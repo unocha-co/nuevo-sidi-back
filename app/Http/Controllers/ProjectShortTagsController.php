@@ -31,20 +31,15 @@ class ProjectShortTagsController extends Controller
                 $d = $this->recursive_childrens($d);
             return $data;
         }
-
-
     }
 
     public function store(Request $request)
     {
-
-
+        //
     }
 
     public function show($id)
     {
-
-
         if ($id) {
             $data = ProjectShortTags::with([
                 'childrens' => function ($query) use ($id) {
@@ -76,7 +71,6 @@ class ProjectShortTagsController extends Controller
                     ]);
                 }
             ])->where('parent_id', 0)->get();
-
         } else {
             $data = ProjectShortTags::with(['childrens'])
                 ->where('parent_id', 0)
