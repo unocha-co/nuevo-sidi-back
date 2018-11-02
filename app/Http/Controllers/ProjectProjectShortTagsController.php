@@ -15,7 +15,31 @@ class ProjectProjectShortTagsController extends Controller
     public function store(Request $request)
     {
         ProjectProjectShortTags::where('project_id', $request->project_id)->delete();
-        foreach ($request['tags'] as $t) {
+        foreach ($request['shorttags1'] as $t) {
+            foreach ($t as $t2) {
+                $data = new ProjectProjectShortTags();
+                $data->project_id = $request->project_id;
+                $data->tag_id = $t2;
+                $data->save();
+            }
+        }
+        foreach ($request['shorttags2'] as $t) {
+            foreach ($t as $t2) {
+                $data = new ProjectProjectShortTags();
+                $data->project_id = $request->project_id;
+                $data->tag_id = $t2;
+                $data->save();
+            }
+        }
+        foreach ($request['shorttags3'] as $t) {
+            foreach ($t as $t2) {
+                $data = new ProjectProjectShortTags();
+                $data->project_id = $request->project_id;
+                $data->tag_id = $t2;
+                $data->save();
+            }
+        }
+        foreach ($request['shorttags4'] as $t) {
             foreach ($t as $t2) {
                 $data = new ProjectProjectShortTags();
                 $data->project_id = $request->project_id;
