@@ -21,7 +21,15 @@ class ProjectController extends Controller
         $data = new Project();
         $data->name = $request->name;
         $data->code = $request->code;
-        $data->cost = $request->cost;
+       // $data->cost = $request->cost;
+        $data->cost = $request->budget[0]['value'];
+
+        /*foreach($request->budget as $bud){
+          if($bud['id'] == 0){
+            $data->cost = $bud['value'];
+          }
+        }*/
+
         $data->description = $request->description;
         $data->date_start = date('Y-m-d H:i:s', strtotime($request->date_start));
         $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
@@ -50,7 +58,32 @@ class ProjectController extends Controller
                 $po = new Budget();
                 $po->project_id = $data->id;
                 $po->budget = $request->budget[$b]['value'];
-                $po->budget_id = $b;
+
+                //guardar cuando id = 0 ó 99 
+
+                if($b == 0){
+                  $po->budget_id = $request->budget[0]['id'];
+
+                }else if($b == 1){
+                  $po->budget_id = $request->budget[1]['id'];
+                  $po->person_value = $request->budget[1]['value'];
+                }else if($b > 1){
+
+                  $po->budget_id = $b-1;
+
+                }
+
+                        /*if(!empty($request->budget[$b]['id'])){
+
+                          $po->budget_id = $request->budget[$b]['id'];
+                        }else{
+                          
+                          $po->budget_id = $b;
+
+                        }*/
+
+                //$po->budget_id = $b;
+                
                 $po->save();
               }
             }
@@ -304,7 +337,11 @@ class ProjectController extends Controller
         if($data){
           $data->name = $request->name;
           $data->code = $request->code;
-          $data->cost = $request->cost;
+          //$data->cost = $request->cost;
+          $data->cost = $request->budget[0]['value'];
+          
+         
+
           $data->description = $request->description;
           $data->date_start = date('Y-m-d H:i:s', strtotime($request->date_start));
           $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
@@ -336,7 +373,36 @@ class ProjectController extends Controller
                     $po = new Budget();
                     $po->project_id = $data->id;
                     $po->budget = $request->budget[$b]['value'];
-                    $po->budget_id = $b;
+
+                   //guardar cuando id = 0 ó 99 
+
+                    if($b == 0){
+                  $po->budget_id = $request->budget[0]['id'];
+
+                }else if($b == 1){
+                  $po->budget_id = $request->budget[1]['id'];
+                  $po->person_value = $request->budget[1]['value'];
+
+                }else if($b > 1){
+
+                  $po->budget_id = $b-1;
+
+
+                }
+                /*
+
+                        if(!empty($request->budget[$b]['id'])){
+
+                          $po->budget_id = $request->budget[$b]['id'];
+                        }else{
+                          
+                          $po->budget_id = $b;
+
+                        }*/
+                      
+               
+                  
+                   // $po->budget_id = $b;
                     $po->save();
                   }
                 }

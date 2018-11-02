@@ -42,6 +42,9 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 	Route::resource('hrp', 'HrpController');
 	Route::resource('project_tags', 'ProjectTagsController');
 	Route::resource('project_tags_rel', 'ProjectProjectTagsController');
+    Route::resource('project_short_tags', 'ProjectShortTagsController');
+    Route::resource('project_short_tags_rel', 'ProjectProjectShortTagsController');
+
 
 	//Custom
 	Route::post('validatePermission', 'UserController@validatePermission');

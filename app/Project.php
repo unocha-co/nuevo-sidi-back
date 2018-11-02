@@ -23,6 +23,11 @@ class Project extends Model
         return $this->hasMany('App\ProjectProjectTags', 'project_id', 'id');
     }
 
+     public function shorttags()
+    {
+        return $this->hasMany('App\ProjectProjectShortTags', 'project_id', 'id');
+    }
+
     public function beneficiaries()
     {
         return $this->hasMany('App\ProjectBeneficiaries', 'project_id', 'id');
