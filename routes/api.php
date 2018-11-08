@@ -33,12 +33,14 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 	Route::resource('relation', 'OrganizationProjectRelationController');
 	Route::resource('organizations', 'OrganizationsController');
 	Route::resource('project', 'ProjectController');
+
 	Route::resource('projectclass', 'ProjectClassController');
 	Route::resource('contact', 'ContactGroupsController');
 	Route::resource('types', 'OrganizationTypesController');
 	Route::resource('userprofiles', 'UserProfilesController');
 	Route::resource('allprojects', 'ProjectController');
 	Route::resource('contacts', 'ContactsController');
+	Route::resource('project_beneficiaries_groups', 'ProjectBGController');
 	Route::resource('hrp', 'HrpController');
 	Route::resource('project_tags', 'ProjectTagsController');
 	Route::resource('project_tags_rel', 'ProjectProjectTagsController');

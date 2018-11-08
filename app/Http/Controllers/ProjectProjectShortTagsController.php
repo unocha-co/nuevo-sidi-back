@@ -16,12 +16,20 @@ class ProjectProjectShortTagsController extends Controller
     {
         ProjectProjectShortTags::where('project_id', $request->project_id)->delete();
         foreach ($request['shorttags1'] as $t) {
-            foreach ($t as $t2) {
+            if (is_array($t)) {
+                foreach ($t as $t2) {
+                    $data = new ProjectProjectShortTags();
+                    $data->project_id = $request->project_id;
+                    $data->tag_id = $t2;
+                    $data->save();
+                }
+            } elseif ($t) {
                 $data = new ProjectProjectShortTags();
                 $data->project_id = $request->project_id;
-                $data->tag_id = $t2;
+                $data->tag_id = $t;
                 $data->save();
             }
+
         }
         foreach ($request['shorttags2'] as $t) {
             foreach ($t as $t2) {
