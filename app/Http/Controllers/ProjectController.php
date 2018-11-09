@@ -253,7 +253,8 @@ class ProjectController extends Controller
     {
         $data = Project::with(['budget', 'location', 'shorttags', 'tags', 'beneficiaries'])
             ->where('id', $id)
-            ->select('name', 'hrp_id as hrp', 'code', 'contact_id as contact', 'interagency', 'description', 'id', 'date_start', 'date_end', 'cost', 'span')
+            ->select('name', 'code', 'contact_id as contact', 'description', 'id', 'date_start', 'date_end',
+                'date_budget', 'documents', 'span')
             ->first();
         if ($data) {
             $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
@@ -291,7 +292,7 @@ class ProjectController extends Controller
             $data->code = $request->code;
             $data->cost = $request->budget[0]['value'];
             $data->description = $request->description;
-            $data->documents = $request->urlsoportes;
+            $data->documents = $request->documents;
             $data->span = $request->span;
             $data->date_start = date('Y-m-d H:i:s', strtotime($request->date_start));
             $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
