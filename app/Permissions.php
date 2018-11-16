@@ -10,7 +10,7 @@ class Permissions extends Model
 
     public function children()
     {
-        return $this->hasMany('App\Permissions', 'parent', 'id');
+        return $this->hasMany('App\Permissions', 'parent_id', 'id');
     }
 
 }

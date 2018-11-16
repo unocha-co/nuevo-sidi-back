@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function permissions_profile()
     {
-        return $this->hasMany('App\ProfilePermissions', 'id_profile', 'user_profile_id');
+        return $this->hasMany('App\ProfilePermissions', 'profile_id', 'profile_id');
     }
 
     public function auth0()

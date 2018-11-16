@@ -15,6 +15,7 @@ class ProjectProjectShortTagsController extends Controller
     public function store(Request $request)
     {
         ProjectProjectShortTags::where('project_id', $request->project_id)->delete();
+        $data = [];
         foreach ($request['shorttags1'] as $t) {
             if (is_array($t)) {
                 foreach ($t as $t2) {

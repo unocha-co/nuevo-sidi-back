@@ -30,6 +30,7 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 
 	//Resources
 	Route::resource('administrative', 'AdministrativeDivisionsController');
+	Route::get('administrativeMap','AdministrativeDivisionsController@indexMap');
 	Route::resource('relation', 'OrganizationProjectRelationController');
 	Route::resource('organizations', 'OrganizationsController');
 	Route::resource('project', 'ProjectController');
@@ -46,6 +47,9 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 	Route::resource('project_tags_rel', 'ProjectProjectTagsController');
     Route::resource('project_short_tags', 'ProjectShortTagsController');
     Route::resource('project_short_tags_rel', 'ProjectProjectShortTagsController');
+    Route::resource('project_beneficiaries_groups', 'ProjectBGController');
+
+    Route::get('projects_by_admin/{adminid}','ProjectController@projectsByAdmin');
 
 
 	//Custom

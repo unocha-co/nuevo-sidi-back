@@ -17,6 +17,10 @@ class AdministrativeDivisions extends Model
     {
         return $this->hasMany('App\AdministrativeDivisions', 'parent_id', 'id');
     }
+
+     public function projects(){
+        return $this->belongsToMany(Project::class, 'projects_admins','admin_id');
+    }
 }
 
 

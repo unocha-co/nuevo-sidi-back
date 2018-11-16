@@ -36,15 +36,15 @@ class ProjectController extends Controller
                 $po = new ProjectOrganization();
                 $po->project_id = $data->id;
                 $po->organization_id = $request->organization;
-                $po->organization_project_relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
+                $po->relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
                 $po->save();
             }
-            $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
+            $implementers_id = OrganizationProjectRelation::where('name', 'Socio')->first()->id;
             foreach ($request->implementers as $i) {
                 $po = new ProjectOrganization();
                 $po->project_id = $data->id;
                 $po->organization_id = $i;
-                $po->organization_project_relation_id = $implementers_id;
+                $po->relation_id = $implementers_id;
                 $po->save();
             }
             $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
@@ -53,7 +53,7 @@ class ProjectController extends Controller
                     $po = new ProjectOrganization();
                     $po->project_id = $data->id;
                     $po->organization_id = $d['id'];
-                    $po->organization_project_relation_id = $donors_id;
+                    $po->relation_id = $donors_id;
                     $po->value = $d['value'];
                     $po->save();
                 }
@@ -82,7 +82,7 @@ class ProjectController extends Controller
         $i = $request->indirectos;
         $o = $request->organizations;
         ProjectBeneficiaries::where('project_id', $id)->delete();
-        ProjectOrganization::where('project_id', $id)->where('organization_project_relation_id', 5)->delete();
+        ProjectOrganization::where('project_id', $id)->where('relation_id', 5)->delete();
         if (isset($p['benef'])) {
             foreach ($p['benef'] as $key => $val) {
                 if ($val) {
@@ -100,7 +100,7 @@ class ProjectController extends Controller
                 $po = new ProjectOrganization();
                 $po->project_id = $id;
                 $po->organization_id = $org;
-                $po->organization_project_relation_id = 5;
+                $po->relation_id = 5;
                 $po->save();
             }
         }
@@ -257,23 +257,23 @@ class ProjectController extends Controller
                 'date_budget', 'documents', 'span')
             ->first();
         if ($data) {
-            $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
+            $implementers_id = OrganizationProjectRelation::where('name', 'Socio')->first()->id;
             $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
             $ejecutor_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
             $data->implementers = ProjectOrganization::where('project_id', $id)
-                ->where('organization_project_relation_id', $implementers_id)
+                ->where('relation_id', $implementers_id)
                 ->select(['organization_id'])
                 ->get();
             $data->donors = ProjectOrganization::where('project_id', $id)
-                ->where('organization_project_relation_id', $donors_id)
+                ->where('relation_id', $donors_id)
                 ->select(['organization_id', 'value'])
                 ->get();
             $data->beneficiaries_organizations = ProjectOrganization::where('project_id', $id)
-                ->where('organization_project_relation_id', 5)
+                ->where('relation_id', 5)
                 ->select(['organization_id'])
                 ->get();
             $e = ProjectOrganization::where('project_id', $id)
-                ->where('organization_project_relation_id', $ejecutor_id)
+                ->where('relation_id', $ejecutor_id)
                 ->select(['organization_id'])
                 ->first();
             $data->organization = $e ? $e->organization_id : null;
@@ -304,15 +304,15 @@ class ProjectController extends Controller
                     $po = new ProjectOrganization();
                     $po->project_id = $data->id;
                     $po->organization_id = $request->organization;
-                    $po->organization_project_relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
+                    $po->relation_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
                     $po->save();
                 }
-                $implementers_id = OrganizationProjectRelation::where('name', 'Implementadores')->first()->id;
+                $implementers_id = OrganizationProjectRelation::where('name', 'Socio')->first()->id;
                 foreach ($request->implementers as $i) {
                     $po = new ProjectOrganization();
                     $po->project_id = $data->id;
                     $po->organization_id = $i;
-                    $po->organization_project_relation_id = $implementers_id;
+                    $po->relation_id = $implementers_id;
                     $po->save();
                 }
                 Budget::where('project_id', $id)->delete();
@@ -339,7 +339,7 @@ class ProjectController extends Controller
                         $po = new ProjectOrganization();
                         $po->project_id = $data->id;
                         $po->organization_id = $d['id'];
-                        $po->organization_project_relation_id = $donors_id;
+                        $po->relation_id = $donors_id;
                         $po->value = $d['value'];
                         $po->save();
                     }
@@ -385,5 +385,15 @@ class ProjectController extends Controller
         }
         $count = Project::count();
         return ['draw' => $_GET['draw'], 'recordsTotal' => $count, 'recordsFiltered' => $count, 'data' => $data, 'buscar' => $_GET['search']['value'] ? true : false];
+    }
+
+
+
+    public function projectsByAdmin($adminid){
+
+        $data = ProjectAdmin::with([
+            'project','adminDivision'])->where('admin_id',$adminid)->get();
+
+        return $data;
     }
 }

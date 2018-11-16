@@ -10,6 +10,6 @@ class ProfilePermissions extends Model
 
     public function permissions()
     {
-        return $this->hasMany('App\Permissions', 'id', 'id_profile');
+        return $this->hasMany('App\Permissions', 'id', 'profile_id');
     }
 }

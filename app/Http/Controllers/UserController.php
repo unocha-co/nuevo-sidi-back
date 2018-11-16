@@ -43,7 +43,7 @@ class UserController extends Controller
             $user->name = $request->name;
             $user->email = $request->email;
             $user->organization_id = 0;
-            $user->user_profile_id = 0;
+            $user->profile_id = 1;
             $save = $user->save();
             $userauth = new UserAuth();
             $userauth->auth0_id = $request->user_id;
@@ -64,17 +64,17 @@ class UserController extends Controller
         $auth0 = \App::make('auth0');
         $tinfo = $auth0->decodeJWT($accessToken);
         $user = UserAuth::with('user')->where('auth0_id', $tinfo->sub)->first()->user;
-        $permissions = Permissions::join('permissions_profile', 'permissions_profile.id_permission', '=', 'permissions.id')
+        $permissions = Permissions::join('permissions_profile', 'permissions_profile.permission_id', '=', 'permissions.id')
             ->select('permissions.id', 'permissions.name', 'permissions.url', 'permissions.icon', 'permissions.title')
-            ->where('permissions_profile.id_profile', $user->user_profile_id)
-            ->whereNull('permissions.parent')
+            ->where('permissions_profile.profile_id', $user->profile_id)
+            ->whereNull('permissions.parent_id')
             ->get();
         foreach ($permissions as $p) {
             $p->title = $p->title == 1 ? true : false;
-            $childrens = Permissions::join('permissions_profile', 'permissions_profile.id_permission', '=', 'permissions.id')
+            $childrens = Permissions::join('permissions_profile', 'permissions_profile.permission_id', '=', 'permissions.id')
                 ->select('permissions.name', 'permissions.url', 'permissions.icon')
-                ->where('permissions_profile.id_profile', $user->user_profile_id)
-                ->where('permissions.parent', $p->id)
+                ->where('permissions_profile.profile_id', $user->profile_id)
+                ->where('permissions.parent_id', $p->id)
                 ->get();
             if (count($childrens) > 0)
                 $p->children = $childrens;
@@ -87,9 +87,9 @@ class UserController extends Controller
         $auth0 = \App::make('auth0');
         $tinfo = $auth0->decodeJWT($request->bearerToken());
         $user = UserAuth::with('user')->where('auth0_id', $tinfo->sub)->first()->user;
-        $permission = Permissions::join('permissions_profile', 'permissions_profile.id_permission', '=', 'permissions.id')
+        $permission = Permissions::join('permissions_profile', 'permissions_profile.permission_id', '=', 'permissions.id')
             ->select('permissions.id', 'permissions.name', 'permissions.url', 'permissions.icon', 'permissions.title')
-            ->where('permissions_profile.id_profile', $user->user_profile_id)
+            ->where('permissions_profile.profile_id', $user->profile_id)
             ->where('permissions.url', $request->url)
             ->first();
         return ['status' => true, 'granted' => $permission ? true : false];

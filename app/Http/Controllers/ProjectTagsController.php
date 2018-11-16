@@ -8,7 +8,7 @@ use App\ProjectTags;
 class ProjectTagsController extends Controller
 {
 
-    public function index($id)
+    public function index($id = false)
     {
         if ($id) {
             $data = ProjectTags::with([
@@ -19,13 +19,13 @@ class ProjectTagsController extends Controller
                         }
                     ]);
                 }
-            ])->where('parent_id', 0)->get();
+            ])->where('parent_id', null)->get();
             foreach ($data as $d)
                 $d = $this->recursive_childrens($d);
             return $data;
         } else {
             $data = ProjectTags::with(['childrens'])
-                ->where('parent_id', 0)
+                ->where('parent_id', null)
                 ->get();
             foreach ($data as $d)
                 $d = $this->recursive_childrens($d);
@@ -70,10 +70,10 @@ class ProjectTagsController extends Controller
                         }
                     ]);
                 }
-            ])->where('parent_id', 0)->get();
+            ])->where('parent_id', null)->get();
         } else {
             $data = ProjectTags::with(['childrens'])
-                ->where('parent_id', 0)
+                ->where('parent_id', null)
                 ->get();
         }
         foreach ($data as $d)
@@ -93,7 +93,6 @@ class ProjectTagsController extends Controller
     {
         if (count($item->childrens) > 0) {
             foreach ($item->childrens as $c) {
-                //$data = ProjectTags::where('parent_id', $c->id)->get();
                 $data = ProjectTags::where('parent_id', $c->id)->get();
                 foreach ($data as $d)
                     $d = $this->recursive_childrens($d);

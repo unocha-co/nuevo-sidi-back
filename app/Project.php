@@ -32,4 +32,10 @@ class Project extends Model
     {
         return $this->hasMany('App\ProjectBeneficiaries', 'project_id', 'id');
     }
+
+
+
+     public function admins(){
+        return $this->belongsToMany(AdministrativeDivisions::class, 'projects_admins','project_id');
+    }
 }

@@ -11,6 +11,10 @@ class AdministrativeDivisionsController extends Controller
         return AdministrativeDivisions::with('parent')->get();
     }
 
+    public function indexMap() {
+        return AdministrativeDivisions::with('parent')->get();
+    }
+
     public function store(Request $request){
         $data = new AdministrativeDivisions();
         $data->name = $request->name;
