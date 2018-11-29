@@ -19,7 +19,7 @@ class ProjectTags extends Model
 
       public function getNameAttribute()
     {
-         return $this->attributes['code'] . ' ' . $this->attributes['name'];
+        return (isset($this->attributes['code'])) ? $this->attributes['code'] . ' ' . $this->attributes['name'] : $this->attributes['name'];
     }
 
     public function projectprojecttags(){

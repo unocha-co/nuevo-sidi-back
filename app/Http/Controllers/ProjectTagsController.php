@@ -33,6 +33,12 @@ class ProjectTagsController extends Controller
         }
     }
 
+    public function pt_parents()
+    {
+        $data = ProjectTags::select('id', 'name')->where('parent_id', null)->get();
+        return $data;
+    }
+
     public function store(Request $request)
     {
         //

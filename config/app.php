@@ -178,8 +178,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        \Auth0\Login\LoginServiceProvider::class,
-
+        \Auth0\Login\LoginServiceProvider::class
     ],
 
     /*

@@ -17,6 +17,15 @@ class ProjectController extends Controller
     {
         return Project::orderBy('created_at', 'desc')->get();
     }
+    
+
+    //Al enviar todos los proyectos se rompe, no trae la info de cada divisionAdministrativa
+    public function projectsmap(){
+
+      return Project::with(['admins'])->where('id','1182')->orderBy('created_at', 'desc')->get();
+
+
+    }
 
     public function store(Request $request)
     {
@@ -260,22 +269,24 @@ class ProjectController extends Controller
             $implementers_id = OrganizationProjectRelation::where('name', 'Socio')->first()->id;
             $donors_id = OrganizationProjectRelation::where('name', 'Donante')->first()->id;
             $ejecutor_id = OrganizationProjectRelation::where('name', 'Ejecutor')->first()->id;
-            $data->implementers = ProjectOrganization::where('project_id', $id)
+            $data->implementers = ProjectOrganization::with(['org:id,name'])->where('project_id', $id)
                 ->where('relation_id', $implementers_id)
                 ->select(['organization_id'])
                 ->get();
-            $data->donors = ProjectOrganization::where('project_id', $id)
+            $data->donors = ProjectOrganization::with(['org:id,name'])->where('project_id', $id)
                 ->where('relation_id', $donors_id)
                 ->select(['organization_id', 'value'])
                 ->get();
-            $data->beneficiaries_organizations = ProjectOrganization::where('project_id', $id)
+            $data->beneficiaries_organizations = ProjectOrganization::with(['org:id,name'])
+                ->where('project_id', $id)
                 ->where('relation_id', 5)
                 ->select(['organization_id'])
                 ->get();
-            $e = ProjectOrganization::where('project_id', $id)
+            $e = ProjectOrganization::with(['org:id,name'])->where('project_id', $id)
                 ->where('relation_id', $ejecutor_id)
                 ->select(['organization_id'])
                 ->first();
+            $data->ejecutor = $e;
             $data->organization = $e ? $e->organization_id : null;
             $data->date_start = substr($data->date_start, 0, 10);
             $data->date_end = substr($data->date_end, 0, 10);
@@ -388,12 +399,4 @@ class ProjectController extends Controller
     }
 
 
-
-    public function projectsByAdmin($adminid){
-
-        $data = ProjectAdmin::with([
-            'project','adminDivision'])->where('admin_id',$adminid)->get();
-
-        return $data;
-    }
 }

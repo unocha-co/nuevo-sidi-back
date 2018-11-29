@@ -23,7 +23,7 @@ class Project extends Model
         return $this->hasMany('App\ProjectProjectTags', 'project_id', 'id');
     }
 
-     public function shorttags()
+    public function shorttags()
     {
         return $this->hasMany('App\ProjectProjectShortTags', 'project_id', 'id');
     }
@@ -33,9 +33,14 @@ class Project extends Model
         return $this->hasMany('App\ProjectBeneficiaries', 'project_id', 'id');
     }
 
-
-
-     public function admins(){
-        return $this->belongsToMany(AdministrativeDivisions::class, 'projects_admins','project_id');
+    public function org()
+    {
+        return $this->hasMany('App\ProjectOrganization', 'project_id', 'id');
     }
+
+    public function admins()
+    {
+        return $this->hasMany('App\ProjectAdmin', 'project_id', 'id');
+    }
+
 }

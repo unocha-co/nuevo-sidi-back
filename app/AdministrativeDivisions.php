@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdministrativeDivisions extends Model
 {
-    protected $table = "administrative_divisions"; 
+    protected $table = "administrative_divisions";
 
     public function parent()
     {
@@ -18,9 +18,17 @@ class AdministrativeDivisions extends Model
         return $this->hasMany('App\AdministrativeDivisions', 'parent_id', 'id');
     }
 
-     public function projects(){
-        return $this->belongsToMany(Project::class, 'projects_admins','admin_id');
+    public function projects()
+    {
+        return $this->hasMany('App\ProjectAdmin', 'admin_id', 'id');
     }
+
+
+    /*public function projects(){
+    return $this->hasMany(Project::class,'ProjectAdmin','admin_id');
+       }*/
+
+
 }
 
 

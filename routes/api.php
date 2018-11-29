@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('administrativeMap','AdministrativeDivisionsController@indexMap');
+Route::get('project-short-tags-parents', 'ProjectShortTagsController@pt_parents');
+Route::get('project-tags-parents', 'ProjectTagsController@pt_parents');
 
 Route::post('login', 'AuthController@login');
 Route::post('user', 'UserController@store');
@@ -30,10 +33,17 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
 
 	//Resources
 	Route::resource('administrative', 'AdministrativeDivisionsController');
-	Route::get('administrativeMap','AdministrativeDivisionsController@indexMap');
+
+	//para el mapa
+	Route::get('AllProjectsOfAdmin/{idadmin}','AdministrativeDivisionsController@getAllprojectsOfAdmin'); //TRAE TODOS LSO PROYECTOS DE UNA DIVISION ADMINISTRATIVA
+
+
 	Route::resource('relation', 'OrganizationProjectRelationController');
 	Route::resource('organizations', 'OrganizationsController');
 	Route::resource('project', 'ProjectController');
+
+	//Ruta para el mapan, que debe consultar todos los projectos
+    Route::get('projectsMap', 'ProjectController@projectsmap');
 
 	Route::resource('projectclass', 'ProjectClassController');
 	Route::resource('contact', 'ContactGroupsController');
@@ -48,8 +58,12 @@ Route::group(['middleware' => 'jwt_auth0'],function(){
     Route::resource('project_short_tags', 'ProjectShortTagsController');
     Route::resource('project_short_tags_rel', 'ProjectProjectShortTagsController');
     Route::resource('project_beneficiaries_groups', 'ProjectBGController');
+ 
+    //FILTRO POR CIUDAD
+    Route::get('filtroProjectsByAdmin/{adminid}','AdministrativeDivisionsController@filtroProjectsByAdmin');
 
-    Route::get('projects_by_admin/{adminid}','ProjectController@projectsByAdmin');
+    //FILTRO POR FECHA
+    Route::get('ProjectsByFilterMap/{info}/{filter}','AdministrativeDivisionsController@ProjectsByFilterMap');
 
 
 	//Custom

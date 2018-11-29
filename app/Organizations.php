@@ -12,4 +12,8 @@ class Organizations extends Model
     {
         return $this->hasOne('App\OrganizationTypes', 'id', 'organization_type_id');
     }
+
+    public function projectorg(){
+        return $this->hasMany('App\ProjectOrganization', 'organization_id');
+    }
 }
