@@ -9,7 +9,8 @@ class ProjectProjectTags extends Model
     protected $table = "projects_project_tags"; 
 
 
-    /*public function tags(){
-    	return $this->hasMany('App\ProjectTags', 'tag_id');
-    }*/
+    public function tag(){
+    	return $this->belongsTo('App\ProjectTags', 'tag_id');
+    }
 }
+   

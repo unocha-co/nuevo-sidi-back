@@ -11,7 +11,11 @@
         "doctrine/dbal": "^2.8",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
+        "maatwebsite/excel": "~2.1.0",
+        "mohammed-zaki/laravel-excel": "^2.0",
         "predis/predis": "^1.1",
+        "racklin/excel-generator": "dev-master",
+        "rap2hpoutre/fast-excel": "^0.11.0",
         "tymon/jwt-auth": "0.5.*"
     },
     "require-dev": {

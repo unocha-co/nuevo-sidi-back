@@ -178,7 +178,10 @@ return [
         App\Providers\RouteServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        \Auth0\Login\LoginServiceProvider::class
+        \Auth0\Login\LoginServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvide::class,
+         Racklin\ExcelGenerator\ServiceProvider::class,
+         CyberduckWithSheets\LaravelExcel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -231,6 +234,8 @@ return [
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'cors' => Barryvdh\Cors\ServiceProvider::class,
         'Auth0' => \Auth0\Login\Facade\Auth0::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'ExcelGen' => Racklin\ExcelGenerator\Facades\ExcelGenerator::class
 
     ],
 
