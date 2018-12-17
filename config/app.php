@@ -179,7 +179,7 @@ return [
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
         \Auth0\Login\LoginServiceProvider::class,
-        Maatwebsite\Excel\ExcelServiceProvide::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
          Racklin\ExcelGenerator\ServiceProvider::class,
          CyberduckWithSheets\LaravelExcel\ExcelServiceProvider::class,
     ],
