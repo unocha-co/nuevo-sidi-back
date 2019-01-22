@@ -1100,10 +1100,14 @@ class AdministrativeDivisionsController extends Controller
 
     public function getAllRegions()
     {
-        return AdministrativeDivisions::with('childrens')
-            ->where('level', '1')
+
+        $a= AdministrativeDivisions::select('id','name','parent_id')->with(['childrens' => function($q){
+	        $q->select('id','name','parent_id');
+        }])->where('level', '1')
             ->where('name', '!=', 'Nacional')
             ->get();
+
+	    return $a;
     }
 
     private function get_month_budget($date, $start, $end, $type, $budget, $dur)
