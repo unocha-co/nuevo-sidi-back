@@ -40,6 +40,7 @@ class ProjectController extends Controller
         $data->date_end = date('Y-m-d H:i:s', strtotime($request->date_end));
         $data->date_budget = date('Y-m-d H:i:s', strtotime($request->date_budget));
         $data->contact_id = $request->contact;
+	    $data->updated_at = $request->updated_at;
         if ($data->save()) {
             if (isset($request->organization)) {
                 $po = new ProjectOrganization();
